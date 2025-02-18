@@ -1,14 +1,21 @@
 import React from "react";
-import { Route, Routes } from "react-router-dom";
+import { Outlet, Navigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import BlankLayout from "../layouts/BlankLayout";
-import Login from "../pages/Auth/Login";
-import Register from "../pages/Auth/Register";
 
-const AuthRoutes = () => (
-  <Routes>
-    <Route path="/login" element={<BlankLayout><Login /></BlankLayout>} />
-    <Route path="/register" element={<BlankLayout><Register /></BlankLayout>} />
-  </Routes>
-);
+const AuthRoutes = () => {
+  const user = useSelector((state) => state.auth.user);
+
+  // If user is logged in, redirect to dashboard
+  if (user) {
+    return <Navigate to="/user/dashboard" replace />;
+  }
+
+  return (
+    <BlankLayout>
+      <Outlet />
+    </BlankLayout>
+  );
+};
 
 export default AuthRoutes;

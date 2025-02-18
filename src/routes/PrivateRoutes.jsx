@@ -1,40 +1,21 @@
 import React from "react";
-import { Route, Routes, Navigate } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 import { useSelector } from "react-redux";
 import CustomLayout from "../layouts/CustomLayout";
-import DashboardHome from "../pages/Dashboard/DashboardHome";
-import ProfilePage from "../pages/Profile/ProfilePage";
 
 const PrivateRoutes = () => {
   const user = useSelector((state) => state.auth.user);
 
-  // If no user is logged in, redirect to login page
+  // If user is not logged in, redirect to login
   if (!user) {
-    return <Navigate to="/auth/login" />;
+    return <Navigate to="/auth/login" replace />;
   }
 
+  // Wrap all private pages inside CustomLayout
   return (
-    <Routes>
-      {/* Route for /dashboard */}
-      <Route
-        path="/dashboard"
-        element={
-          <CustomLayout>
-            <DashboardHome />
-          </CustomLayout>
-        }
-      />
-
-      {/* Route for /profile */}
-      <Route
-        path="/profile"
-        element={
-          <CustomLayout>
-            <ProfilePage />
-          </CustomLayout>
-        }
-      />
-    </Routes>
+    <CustomLayout>
+      <Outlet />
+    </CustomLayout>
   );
 };
 
