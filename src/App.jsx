@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import AuthRoutes from "./routes/AuthRoutes";
 import PublicRoutes from "./routes/PublicRoutes";
 import PrivateRoutes from "./routes/PrivateRoutes";
@@ -9,6 +9,7 @@ import ProfilePage from "./pages/Profile/ProfilePage";
 import Home from "./pages/Home/Home"
 import Register from "./pages/Auth/Register";
 import Login from "./pages/Auth/Login";
+import ProductsPage from "./pages/Products/ProductsPage";
 
 const App = () => {
   return (
@@ -17,16 +18,17 @@ const App = () => {
         {/* <Route path="/" element={<PublicRoutes />} /> */}
         {/* Auth Route */}
         <Route path="/auth/*" element={<AuthRoutes />}>
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+        <Route index element={<Navigate to="/auth/login" />} />{/* Redirect to dashboard by default */}
+          <Route path="login" element={<Login />} />
+          <Route path="register" element={<Register />} />
         </Route>
 
 
         {/* Public Routes */}
         <Route path="/" element={<PublicRoutes />}>
           <Route index element={<Home />} />
-          {/* <Route path="about" element={<About />} />
-          <Route path="contact" element={<Contact />} /> */}
+           <Route path="products" element={<ProductsPage />} />
+          {/*<Route path="contact" element={<Contact />} /> */}
         </Route>
 
          {/* Contact Page - Uses Custom Blank Layout */}
@@ -34,6 +36,7 @@ const App = () => {
 
         {/* Private Routes */}
         <Route path="/user/*" element={<PrivateRoutes />}>
+          <Route index element={<Navigate to="/user/dashboard" />} />{/* Redirect to dashboard by default */}
           <Route path="dashboard" element={<DashboardHome />} />
           <Route path="profile" element={<ProfilePage />} />
         </Route>
