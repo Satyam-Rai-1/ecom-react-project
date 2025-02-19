@@ -141,14 +141,17 @@ const ProductsPage = () => {
             {filteredProducts.map((product) => (
               <div
                 key={product.id}
-                className="bg-white rounded-lg shadow-lg overflow-hidden"
+                className={`bg-white rounded-lg shadow-lg overflow-hidden ${isSquareView ? "flex items-center" : ""}`}
               >
+                {/* Image */}
                 <img
                   src={product.image}
                   alt={product.name}
-                  className="w-full h-48 object-cover transition duration-300 ease-in-out transform hover:scale-105"
+                  className={`w-auto ${isSquareView ? "w-1/2 h-48 object-cover" : "h-48 object-cover"} transition duration-300 ease-in-out transform hover:scale-105`}
                 />
-                <div className="p-4">
+                
+                {/* Product Details */}
+                <div className={`p-4 ${isSquareView ? "w-1/2" : ""}`}>
                   <h3 className="text-xl font-semibold">{product.name}</h3>
                   <p className="text-gray-500 text-sm mt-2">{product.description}</p>
                   <p className="text-lg font-bold text-blue-600 mt-4">{`₹${product.price.toFixed(2)}`}</p>
@@ -162,6 +165,7 @@ const ProductsPage = () => {
               </div>
             ))}
           </div>
+
         </div>
       </div>
     </div>
