@@ -10,18 +10,16 @@ const Home = () => {
 
   const slidesData = [
     // { id: 1, image: "https://images.pexels.com/photos/1234567/pexels-photo-1234567.jpeg", title: "Slide 1", description: "Description 1" },
-    { id: 2, image: "banners/img1.png", title: "Slide 2", description: "Description 2" },
-    { id: 3, image: "banners/img2.png", title: "Slide 3", description: "Description 3" },
-    { id: 4, image: "banners/img3.png", title: "Slide 4", description: "Description 4" },
-    { id: 5, image: "banners/img4.png", title: "Slide 5", description: "Description 5" },
-    { id: 2, image: "banners/img1.png", title: "Slide 2", description: "Description 2" },
-    { id: 3, image: "banners/img2.png", title: "Slide 3", description: "Description 3" },
-    { id: 4, image: "banners/img3.png", title: "Slide 4", description: "Description 4" },
-    { id: 5, image: "banners/img4.png", title: "Slide 5", description: "Description 5" },
-    { id: 2, image: "banners/img1.png", title: "Slide 2", description: "Description 2" },
-    { id: 3, image: "banners/img2.png", title: "Slide 3", description: "Description 3" },
-    { id: 4, image: "banners/img3.png", title: "Slide 4", description: "Description 4" },
-    { id: 5, image: "banners/img4.png", title: "Slide 5", description: "Description 5" },
+    { id: 1, image: "banners/img1.png", title: "Slide 1", description: "Description 1" },
+    { id: 2, image: "banners/img2.png", title: "Slide 2", description: "Description 2" },
+    { id: 3, image: "banners/img3.png", title: "Slide 3", description: "Description 3" },
+    { id: 4, image: "banners/img4.png", title: "Slide 4", description: "Description 4" },
+    { id: 5, image: "banners/img1.png", title: "Slide 5", description: "Description 5" },
+    { id: 6, image: "banners/img2.png", title: "Slide 6", description: "Description 6" },
+    { id: 7, image: "banners/img3.png", title: "Slide 7", description: "Description 7" },
+    { id: 8, image: "banners/img4.png", title: "Slide 8", description: "Description 8" },
+    { id: 9, image: "banners/img1.png", title: "Slide 9", description: "Description 9" },
+    
     // { id: 6, image: "https://source.unsplash.com/400x300/?cartoon", title: "Slide 6", description: "Description 6" },
   ];
   return (

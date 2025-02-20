@@ -1,5 +1,6 @@
 import React from "react";
 import Navbar from "./Navbars/Navbar";
+import Footer from "./Footers/Footer";
 
 const DefaultLayout = ({ children }) => {
   return (
@@ -9,7 +10,7 @@ const DefaultLayout = ({ children }) => {
       
       <main className="">{children}</main>
 
-      <footer className="bg-blue-600 text-white p-4 mt-4">Default Footer</footer>
+      <Footer/>
     </div>
   );
 };

@@ -78,6 +78,7 @@ const Login = () => {
           >
             {loading ? "Logging in..." : "Login"}
           </button>
+                                                                            
         </form>
 
         {/* Signup Link */}
@@ -88,6 +89,9 @@ const Login = () => {
               Sign up
             </Link>
           </p>
+          <Link to="/" className="text-blue-500 hover:underline">Home
+          {/* <p  className="w-full py-2 sm:py-3  font-semibold  transition duration-300" >home</p> */}
+          </Link> 
         </div>
       </div>
     </div>

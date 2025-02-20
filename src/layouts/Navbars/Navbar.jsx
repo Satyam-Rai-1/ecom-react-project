@@ -1,36 +1,50 @@
 import React, { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux"; // Use Redux for auth state management
+import { logout } from "../../redux/features/authSlice";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isSticky, setIsSticky] = useState(false); // State to track sticky navbar
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
+  const [isSticky, setIsSticky] = useState(false);
+  const isLoggedIn = useSelector((state) => state.auth.user !== null); // Using Redux for login status
+  const dispatch = useDispatch();
+
+  // Handle scroll behavior for sticky navbar
+  const handleScroll = () => {
+    setIsSticky(window.scrollY > 0);
   };
 
   useEffect(() => {
-    // Function to track the scroll position
-    const handleScroll = () => {
-      if (window.scrollY > 0) {
-        setIsSticky(true);
-      } else {
-        setIsSticky(false);
-      }
-    };
-
-    // Attach scroll event listener
+    // Attach scroll event listener on mount
     window.addEventListener("scroll", handleScroll);
 
-    // Cleanup the event listener on component unmount
+    // Cleanup on unmount
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
 
+  // Handle logout action
+  const handleLogout = () => {
+    dispatch(logout()); // Use Redux logout action
+  };
+
+  // Reusable NavLink component
+  const NavItem = ({ to, children }) => (
+    <NavLink
+      to={to}
+      className={({ isActive }) =>
+        isActive ? "text-white font-semibold" : "text-gray-300 hover:text-white"
+      }
+    >
+      {children}
+    </NavLink>
+  );
+
   return (
     <nav
       className={`bg-blue-600 p-4 transition-all duration-300 ease-in-out ${
-        isSticky ? "fixed top-0 left-0 w-full z-50 shadow-lg transform transition-all duration-500" : "relative"
+        isSticky ? "fixed top-0 left-0 w-full z-50 shadow-lg" : "relative"
       }`}
     >
       <div className="max-w-7xl mx-auto flex justify-between items-center">
@@ -43,43 +57,33 @@ const Navbar = () => {
 
         {/* Navbar links (Desktop view) */}
         <div className="hidden md:flex space-x-6">
-          <NavLink
-            to="/"
-            className={({ isActive }) =>
-              isActive ? "text-white font-semibold" : "text-gray-300 hover:text-white"
-            }
-          >
-            Home
-          </NavLink>
-          <NavLink
-            to="/products"
-            className={({ isActive }) =>
-              isActive ? "text-white font-semibold" : "text-gray-300 hover:text-white"
-            }
-          >
-            Products
-          </NavLink>
-          <NavLink
-            to="/cart"
-            className={({ isActive }) =>
-              isActive ? "text-white font-semibold" : "text-gray-300 hover:text-white"
-            }
-          >
-            Cart
-          </NavLink>
-          <NavLink
-            to="/profile"
-            className={({ isActive }) =>
-              isActive ? "text-white font-semibold" : "text-gray-300 hover:text-white"
-            }
-          >
-            Profile
-          </NavLink>
+          <NavItem to="/">Home</NavItem>
+          <NavItem to="/products">Products</NavItem>
+          <NavItem to="/cart">Cart</NavItem>
+          
+
+          {/* Conditionally render Login/Logout */}
+          {!isLoggedIn ? (
+            <>
+              <NavItem to="/auth/login">Login</NavItem>
+              <NavItem to="/auth/register">Register</NavItem>
+            </>
+          ) : (
+            <>
+            <NavItem to="/user/profile">Profile</NavItem>
+            <button
+              onClick={handleLogout}
+              className="text-white font-semibold hover:text-gray-300"
+              >
+              Logout
+            </button>
+            </>
+          )}
         </div>
 
         {/* Hamburger Menu (Mobile view) */}
         <div className="md:hidden">
-          <button onClick={toggleMenu} className="text-white">
+          <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="text-white">
             <svg
               className="w-6 h-6"
               xmlns="http://www.w3.org/2000/svg"
@@ -96,7 +100,7 @@ const Navbar = () => {
       {/* Mobile Drawer (Slide-in menu) */}
       <div
         className={`fixed inset-0 bg-gray-800 bg-opacity-50 z-50 transition-all duration-300 ${isMenuOpen ? "block" : "hidden"}`}
-        onClick={toggleMenu} // Close when clicking outside
+        onClick={() => setIsMenuOpen(false)} // Close when clicking outside
       ></div>
 
       <div
@@ -104,7 +108,7 @@ const Navbar = () => {
           isMenuOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        <button onClick={toggleMenu} className="text-white absolute top-4 right-4">
+        <button onClick={() => setIsMenuOpen(false)} className="text-white absolute top-4 right-4">
           <svg
             className="w-6 h-6"
             xmlns="http://www.w3.org/2000/svg"
@@ -118,42 +122,31 @@ const Navbar = () => {
 
         {/* Drawer Links */}
         <div className="flex flex-col space-y-6">
-          <NavLink
-            to="/"
-            className={({ isActive }) =>
-              isActive ? "text-white font-semibold" : "text-gray-300 hover:text-white"
-            }
-            onClick={toggleMenu}
-          >
-            Home
-          </NavLink>
-          <NavLink
-            to="/products"
-            className={({ isActive }) =>
-              isActive ? "text-white font-semibold" : "text-gray-300 hover:text-white"
-            }
-            onClick={toggleMenu}
-          >
-            Products
-          </NavLink>
-          <NavLink
-            to="/cart"
-            className={({ isActive }) =>
-              isActive ? "text-white font-semibold" : "text-gray-300 hover:text-white"
-            }
-            onClick={toggleMenu}
-          >
-            Cart
-          </NavLink>
-          <NavLink
-            to="/profile"
-            className={({ isActive }) =>
-              isActive ? "text-white font-semibold" : "text-gray-300 hover:text-white"
-            }
-            onClick={toggleMenu}
-          >
-            Profile
-          </NavLink>
+          <NavItem to="/" onClick={() => setIsMenuOpen(false)}>Home</NavItem>
+          <NavItem to="/products" onClick={() => setIsMenuOpen(false)}>Products</NavItem>
+          <NavItem to="/cart" onClick={() => setIsMenuOpen(false)}>Cart</NavItem>
+          
+
+          {/* Conditionally render Login/Logout for Mobile */}
+          {!isLoggedIn ? (
+            <>
+              <NavItem to="/auth/login" onClick={() => setIsMenuOpen(false)}>Login</NavItem>
+              <NavItem to="/auth/register" onClick={() => setIsMenuOpen(false)}>Register</NavItem>
+            </>
+          ) : (
+            <>
+            <NavItem to="/user/profile" onClick={() => setIsMenuOpen(false)}>Profile</NavItem>
+            <button
+              onClick={() => {
+                handleLogout();
+                setIsMenuOpen(false);
+              }}
+              className="text-white font-semibold hover:text-gray-300"
+              >
+              Logout
+            </button>
+              </>
+          )}
         </div>
       </div>
     </nav>

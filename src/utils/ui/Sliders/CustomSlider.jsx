@@ -7,14 +7,13 @@ import "swiper/css/pagination";
 
 const CustomSlider = ({
   slides,
-  slidesPerView ,
+  slidesPerView,
   width = "100%", 
   height = "400px",
   autoplay = true,
   loop = true,
   navigation = true,
   pagination = false,
-  
   shape = "rectangle", // Options: "circle", "square", "rectangle"
 }) => {
   // Shape Styles
@@ -41,8 +40,8 @@ const CustomSlider = ({
           1024: { slidesPerView: slidesPerView}, // Desktop
         }}
       >
-        {slides.map((slide) => (
-          <SwiperSlide key={slide.id} className="flex justify-center items-center">
+        {slides.map((slide, index) => (
+          <SwiperSlide key={slide.id || `${slide.title}-${index}`} className="flex justify-center items-center">
             <div className={`relative w-full h-full ${shapeStyles[shape]}`}>
               <img
                 src={slide.image}
