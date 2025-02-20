@@ -6,8 +6,8 @@ require("./Models/db")
 const cors = require('cors');
 const AuthRouter = require('./Routes/AuthRouter');
 const ProductRoutes = require('./Routes/ProductRoutes');
-
-
+const BrandRoutes =require('./Routes/BrandRoutes')
+const CategoryRoutes= require('./Routes/CategoryRoutes')
 
 const PORT = process.env.PORT ||8081
 
@@ -20,6 +20,10 @@ app.use(bodyParser.json());
 app.use(cors())
 app.use('/auth',AuthRouter)
 app.use("/api", ProductRoutes);
+app.use("/api", BrandRoutes); 
+app.use("/api/categories", CategoryRoutes); // Mount category routes
+
+
 
 
 app.listen(PORT,()=>{

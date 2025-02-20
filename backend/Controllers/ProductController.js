@@ -1,9 +1,16 @@
 const Product = require("../Models/Product");
 
-// Get all products
+// Helper function to format validation errors
+const formatValidationErrors = (error) => {
+  return Object.values(error.errors).map(val => val.message);
+};
+
+// Get all products with populated brand and category details
 exports.getAllProducts = async (req, res) => {
   try {
-    const products = await Product.find({});
+    const products = await Product.find({})
+      .populate("brand", "name")
+      .populate("category", "name description");
     res.status(200).json({
       success: true,
       count: products.length,
@@ -21,17 +28,16 @@ exports.getAllProducts = async (req, res) => {
 // Create a new product
 exports.createProduct = async (req, res) => {
   try {
-    const { name, description, price, category, image, slug, stock, isFeatured } = req.body;
-    
-    // Check if required fields exist
-    if (!name || !description || !price || !category || !image || !slug) {
+    const { name, description, price, category, image, slug, stock, isFeatured, brand } = req.body;
+
+    // Validate required fields
+    if (!name || !description || !price || !category || !image || !slug || !brand) {
       return res.status(400).json({
         success: false,
-        message: "Missing required fields: name, description, price, category, image, and slug are required.",
+        message: "Missing required fields: name, description, price, category, image, slug, and brand are required.",
       });
     }
-    
-    // Create a new product instance
+
     const product = new Product({
       name,
       description,
@@ -41,36 +47,40 @@ exports.createProduct = async (req, res) => {
       slug,
       stock: stock || 0,
       isFeatured: isFeatured || false,
+      brand,
     });
-    
-    // Save to the database
+
     const savedProduct = await product.save();
-    
+
+    // Optionally populate brand and category before returning response
+    const populatedProduct = await Product.findById(savedProduct._id)
+      .populate("brand", "name")
+      .populate("category", "name description");
+
     res.status(201).json({
       success: true,
       message: "Product created successfully",
-      data: savedProduct,
+      data: populatedProduct,
     });
   } catch (error) {
-    // Handle duplicate key error for slug
+    // Handle duplicate key error (e.g., slug conflict)
     if (error.code === 11000) {
       return res.status(400).json({
         success: false,
-        message: "Slug must be unique. The provided slug already exists.",
+        message: "Duplicate value error: ensure the slug or other unique fields are not repeated.",
       });
     }
-    
-    // Validation errors from Mongoose
+
+    // Handle validation errors
     if (error.name === "ValidationError") {
-      const messages = Object.values(error.errors).map(val => val.message);
+      const errors = formatValidationErrors(error);
       return res.status(400).json({
         success: false,
         message: "Validation Error",
-        errors: messages,
+        errors,
       });
     }
-    
-    // Server error
+
     res.status(500).json({
       success: false,
       message: "Server error, unable to create product",
@@ -79,15 +89,12 @@ exports.createProduct = async (req, res) => {
   }
 };
 
-
 // Update a product by ID
 exports.updateProduct = async (req, res) => {
   try {
     const productId = req.params.id;
     const updateData = req.body;
 
-    // Optionally, validate required fields if necessary.
-    // For example, you can check if at least one field is provided for update:
     if (Object.keys(updateData).length === 0) {
       return res.status(400).json({
         success: false,
@@ -95,7 +102,6 @@ exports.updateProduct = async (req, res) => {
       });
     }
 
-    // Update product: new: true returns the updated document
     const updatedProduct = await Product.findByIdAndUpdate(productId, updateData, {
       new: true,
       runValidators: true,
@@ -108,27 +114,30 @@ exports.updateProduct = async (req, res) => {
       });
     }
 
+    // Populate updated product details
+    const populatedProduct = await Product.findById(updatedProduct._id)
+      .populate("brand", "name")
+      .populate("category", "name description");
+
     res.status(200).json({
       success: true,
       message: "Product updated successfully",
-      data: updatedProduct,
+      data: populatedProduct,
     });
   } catch (error) {
-    // Handle duplicate key error (e.g., slug conflict)
     if (error.code === 11000) {
       return res.status(400).json({
         success: false,
-        message: "Duplicate field value entered. The slug must be unique.",
+        message: "Duplicate field value entered. Please check unique fields.",
       });
     }
 
-    // Handle Mongoose validation errors
     if (error.name === "ValidationError") {
-      const messages = Object.values(error.errors).map((val) => val.message);
+      const errors = formatValidationErrors(error);
       return res.status(400).json({
         success: false,
         message: "Validation Error",
-        errors: messages,
+        errors,
       });
     }
 
@@ -140,14 +149,12 @@ exports.updateProduct = async (req, res) => {
   }
 };
 
-
 // Delete a product by ID
 exports.deleteProduct = async (req, res) => {
   try {
     const productId = req.params.id;
-
-    // Check if product exists
     const product = await Product.findById(productId);
+
     if (!product) {
       return res.status(404).json({
         success: false,
@@ -155,9 +162,7 @@ exports.deleteProduct = async (req, res) => {
       });
     }
 
-    // Use deleteOne on the document instance
     await product.deleteOne();
-
     res.status(200).json({
       success: true,
       message: "Product deleted successfully",
@@ -170,4 +175,3 @@ exports.deleteProduct = async (req, res) => {
     });
   }
 };
-

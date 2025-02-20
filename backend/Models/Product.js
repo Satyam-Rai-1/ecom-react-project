@@ -16,19 +16,15 @@ const productSchema = new mongoose.Schema(
       required: [true, "Product price is required"],
       min: [0, "Price must be a positive number"],
     },
+    // Reference to the Category model instead of a simple string
     category: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Category",
       required: [true, "Category is required"],
     },
     image: {
       type: String,
-    //   required: [true, "Product image is required"],
-    //   validate: {
-    //     validator: function (value) {
-    //       return /^https?:\/\/.+\.(jpg|jpeg|png|webp|gif|svg)$/.test(value);
-    //     },
-    //     message: "Invalid image URL format",
-    //   },
+      // Optionally add URL validation if needed
     },
     slug: {
       type: String,
@@ -46,6 +42,12 @@ const productSchema = new mongoose.Schema(
     isFeatured: {
       type: Boolean,
       default: false,
+    },
+    // Reference to the Brand model
+    brand: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Brand",
+      required: [true, "Brand is required"],
     },
   },
   { timestamps: true }
