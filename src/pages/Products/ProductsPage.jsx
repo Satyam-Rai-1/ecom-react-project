@@ -4,6 +4,7 @@ import { NavLink } from "react-router-dom";
 import { fetchProducts } from "../../redux/features/productsSlice";
 import { fetchBrands } from "../../redux/features/brandsSlice";
 import { fetchCategories } from "../../redux/features/categoriesSlice";
+import Skeleton from "react-loading-skeleton"; 
 
 const ProductsPage = () => {
   const dispatch = useDispatch();
@@ -100,6 +101,7 @@ const ProductsPage = () => {
             </select>
           </div>
         </div>
+
         <div className="w-full md:w-3/4">
           <h2 className="text-3xl font-bold text-center mb-8">Products</h2>
           <div className="flex justify-center mb-6">
@@ -107,15 +109,25 @@ const ProductsPage = () => {
               {isSquareView ? "Switch to Rectangular View" : "Switch to Square View"}
             </button>
           </div>
-          {status === "loading" && <p className="text-center text-gray-500">Loading products...</p>}
+          {status === "loading" &&
+          <>
+          
+          {/* <Skeleton circle={true} height={50} width={50} />
+          <Skeleton style={{ borderRadius: 10 }} />
+          <Skeleton className="foobar" /> */}
+           <Skeleton count={6} height={200} />
+          </>
+           }
+
           {status === "failed" && <p className="text-center text-red-500">Error: {error}</p>}
+
           {status === "succeeded" && (
             <div>
               <div className={`grid ${isSquareView ? "grid-cols-1" : "grid-cols-1 sm:grid-cols-2 md:grid-cols-3"} gap-6 min-h-[300px]`}>
                 {currentProducts.map((product) => (
                   <div key={product._id} className="bg-white rounded-lg shadow-lg overflow-hidden">
-                   <img src={product.image || "https://dummyimage.com/400"} alt={product.name} className="w-auto h-48 object-cover transition duration-300 hover:scale-105" />
-
+                    <img src={product.image || "https://dummyimage.com/400"} alt={product.name}
+                     className="w-auto h-48 object-cover transition duration-300 hover:scale-105" />
                     <div className="p-4">
                       <h3 className="text-xl font-semibold">{product.name}</h3>
                       <p className="text-gray-500 text-sm mt-2">{product.description}</p>
@@ -125,6 +137,7 @@ const ProductsPage = () => {
                   </div>
                 ))}
               </div>
+
               <div className="flex justify-center items-center mt-6">
                 <button onClick={handlePrevPage} disabled={currentPage === 1} className="px-4 py-2 mx-2 bg-gray-300 rounded disabled:opacity-50">Previous</button>
                 <span className="mx-2">Page {currentPage} of {totalPages}</span>

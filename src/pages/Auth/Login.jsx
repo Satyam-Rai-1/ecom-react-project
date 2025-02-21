@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { loginUser } from "../../redux/features/authSlice";
 import ThemeToggleButton from "../../components/Buttons/ThemeToggleButton";
+import { setUser, syncCartWithDatabase } from "../../redux/features/cartSlice";
 
 const Login = () => {
   const [email, setEmail] = useState("satyam@gmail.com");
@@ -17,6 +18,10 @@ const Login = () => {
 
     dispatch(loginUser(credentials)).then((result) => {
       if (result.type === "auth/loginUser/fulfilled") {
+        dispatch(setUser(userId));
+
+      // Sync the localStorage cart with the database
+      dispatch(syncCartWithDatabase(userId));
         navigate("/user/dashboard");
       }
     });

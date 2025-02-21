@@ -8,6 +8,8 @@ const AuthRouter = require('./Routes/AuthRouter');
 const ProductRoutes = require('./Routes/ProductRoutes');
 const BrandRoutes =require('./Routes/BrandRoutes')
 const CategoryRoutes= require('./Routes/CategoryRoutes')
+const CartRoutes= require('./Routes/CartRoutes')
+
 
 const PORT = process.env.PORT ||8081
 
@@ -22,6 +24,7 @@ app.use('/auth',AuthRouter)
 app.use("/api", ProductRoutes);
 app.use("/api", BrandRoutes); 
 app.use("/api/categories", CategoryRoutes); // Mount category routes
+app.use("/api/cart", CartRoutes);
 
 
 
